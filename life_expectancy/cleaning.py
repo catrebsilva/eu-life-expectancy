@@ -27,10 +27,13 @@ def _reshape_to_long_format(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _clean_and_filter_data(df: pd.DataFrame, country_code: str) -> pd.DataFrame:
-    df["year"] = df["year"].str.extract(r"(\d{4})").astype(int)
+    df["year"] = df["year"].astype(int)
     df["value"] = pd.to_numeric(df["value"], errors="coerce")
     df = df.dropna(subset=["value"])
-    return df[df["region"] == country_code]
+    df = df[df["region"] == country_code]
+    print(f"After filter '{country_code}':", len(df))
+    return df
+
 
 
 def _save_cleaned_data(df: pd.DataFrame) -> None:
