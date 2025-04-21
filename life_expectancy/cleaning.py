@@ -1,57 +1,53 @@
-"""Cleaning module for life expectancy data.
-
-This module loads, cleans and saves life expectancy data filtered by region.
-"""
+"""Cleaning script for EU life expectancy data."""
 
 from pathlib import Path
 import pandas as pd
 
+def clean_data(country_code: str = "PT") -> None:
+    """Loads, cleans, filters and saves life expectancy data for the given country code."""
+    raw_data = _load_raw_data()
+    reshaped_data = _reshape_to_long_format(raw_data)
+    cleaned_data = _clean_and_filter_data(reshaped_data, country_code)
+    _save_cleaned_data(cleaned_data)
+    print(f"✅ Dados de esperança média de vida para '{country_code}' guardados com sucesso!")
 
-def load_data() -> pd.DataFrame:
-    """Load original data from the file"""
+
+def _load_raw_data() -> pd.DataFrame:
     file_path = Path(__file__).parent / "data" / "eu_life_expectancy_raw.tsv"
     return pd.read_csv(file_path, sep="\t")
 
 
-def _clean_data(df: pd.DataFrame, region: str = "PT") -> pd.DataFrame:
-    """Cleans and filters data for a specific region"""
-    df_long = df.melt(id_vars="unit,sex,age,geo\\time", var_name="year", value_name="value")
-
-    split_cols = df_long["unit,sex,age,geo\\time"].str.split(",", expand=True)
-    split_cols.columns = ["unit", "sex", "age", "region"]
-
-    df_long = df_long.drop(columns=["unit,sex,age,geo\\time"])
-    df_long = pd.concat([split_cols, df_long], axis=1)
-
-    df_long["year"] = df_long["year"].astype(int)
-    df_long["value"] = df_long["value"].str.extract(r"(\d+(?:\.\d+)?)")[0]
-    df_long["value"] = pd.to_numeric(df_long["value"], errors="coerce")
-    df_long = df_long.dropna(subset=["value"])
-    df_filtered_by_region = df_long[df_long["region"] == region]
-
-    return df_filtered_by_region
+def _reshape_to_long_format(df: pd.DataFrame) -> pd.DataFrame:
+    split = df["unit,sex,age,geo\\time"].str.split(",", expand=True)
+    split.columns = ["unit", "sex", "age", "region"]
+    df = df.drop(columns=["unit,sex,age,geo\\time"])
+    df = pd.concat([split, df], axis=1)
+    return df.melt(id_vars=["unit", "sex", "age", "region"],
+                   var_name="year", value_name="value")
 
 
-def save_data(df: pd.DataFrame, region: str = "PT") -> None:
-    """Guarda os dados limpos num ficheiro CSV."""
-    output_path = Path(__file__).parent / "data" / f"{region.lower()}_life_expectancy.csv"
+def _clean_and_filter_data(df: pd.DataFrame, country_code: str) -> pd.DataFrame:
+    df["year"] = df["year"].str.extract(r"(\d{4})").astype(int)
+    df["value"] = pd.to_numeric(df["value"], errors="coerce")
+    df = df.dropna(subset=["value"])
+    return df[df["region"] == country_code]
+
+
+def _save_cleaned_data(df: pd.DataFrame) -> None:
+    output_path = Path(__file__).parent / "data" / "pt_life_expectancy.csv"
     df.to_csv(output_path, index=False)
 
 
-def main(region: str = "PT") -> pd.DataFrame:
-    """Função principal que é usada pelo teste. Executa o pipeline completo."""
-    raw_df = load_data()
-    cleaned_df = _clean_data(raw_df, region)
-    save_data(cleaned_df, region)
-    return cleaned_df
-
-
-clean_data = main
-
-
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     import argparse
+
     parser = argparse.ArgumentParser(description="Clean life expectancy data for a given country.")
-    parser.add_argument("--region", type=str, default="PT", help="Country code to filter data")
+    parser.add_argument(
+        "--country",
+        type=str,
+        default="PT",
+        help="Country code to filter data (default: PT)"
+    )
+
     args = parser.parse_args()
-    main(args.region)
+    clean_data(args.country)
