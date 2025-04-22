@@ -1,3 +1,5 @@
+# .github/workflows/ci.yml
+
 name: CI Pipeline
 
 on:
@@ -11,22 +13,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+    - name: Checkout repo
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pandas pytest pytest-cov pylint
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Run Pytest with coverage
-        run: pytest --cov
+    - name: Run Pytest with coverage
+      run: pytest --cov
 
-      - name: Run Pylint
-        run: pylint life_expectancy
+    - name: Run Pylint
+      run: pylint life_expectancy
 
