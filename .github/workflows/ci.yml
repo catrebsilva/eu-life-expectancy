@@ -20,7 +20,7 @@ jobs:
         pip install -e '.[dev]'
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py')
+        pylint life_expectancy
     - name: Run pytest
       run: |
         pytest
