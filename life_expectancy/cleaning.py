@@ -1,17 +1,15 @@
 """Cleaning module for life expectancy data"""
 
-# pylint: disable=missing-function-docstring
-
 from pathlib import Path
 import pandas as pd
 
-def load_data() -> pd.DataFrame:
-    file_path = Path(__file__).parent / "data" / "eu_life_expectancy_raw.tsv"
+def load_data(file_path: Path = Path(__file__).parent / "data" / "eu_life_expectancy_raw.tsv") -> pd.DataFrame:
+    """Load the life expectancy data from a TSV file."""
     data = pd.read_csv(file_path, sep="\t")
     return data
 
-def _clean_data(life_expectancy_raw_df: pd.DataFrame, region: str = "PT") -> pd.DataFrame:
-
+def clean_data(life_expectancy_raw_df: pd.DataFrame, region: str = "PT") -> pd.DataFrame:
+    """Clean and reshape raw data, filtering by region."""
     df_melted = life_expectancy_raw_df.melt(
         id_vars="unit,sex,age,geo\\time",
         var_name="year",
@@ -39,10 +37,12 @@ def _clean_data(life_expectancy_raw_df: pd.DataFrame, region: str = "PT") -> pd.
     return df_filtered
 
 def save_data(df: pd.DataFrame, region: str = "PT") -> None:
+    """Save the cleaned data as CSV for the selected region."""
     output_path = Path(__file__).parent / "data" / f"{region.lower()}_life_expectancy.csv"
     df.to_csv(output_path, index=False)
 
 def main(region: str = "PT") -> pd.DataFrame:
+    """Run the full cleaning pipeline for a given region."""
     raw_df = load_data()
     cleaned_df = _clean_data(raw_df, region)
     save_data(cleaned_df, region)
