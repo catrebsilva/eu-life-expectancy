@@ -1,4 +1,4 @@
-"""Cleaning module for life expectancy data."""
+"""Cleaning module for life expectancy data"""
 
 # pylint: disable=missing-function-docstring
 
