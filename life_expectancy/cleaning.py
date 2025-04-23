@@ -5,7 +5,7 @@ import pandas as pd
 
 def load_data(file_path: Path = Path(__file__).parent / "data" / "eu_life_expectancy_raw.tsv"
 ) -> pd.DataFrame:
-    """Load the life expectancy data from a TSV file."""
+    """Clean and reshape raw data, filtering by region."""
     data = pd.read_csv(file_path, sep="\t")
     return data
 
@@ -17,20 +17,23 @@ def clean_data(life_expectancy_raw_df: pd.DataFrame, region: str = "PT") -> pd.D
         value_name="value"
     )
 
-    df_melted[["unit", "sex", "age", "region"]] = (
-        df_melted["unit,sex,age,geo\\time"]
-        .str.split(",", expand=True)
-    )
-    df_split_cols = df_melted.drop(columns=["unit,sex,age,geo\\time"])
+    df_columns_splitted = df_melted["unit,sex,age,geo\\time"].str.split(",", expand=True)
+    df_columns_splitted.columns = ["unit", "sex", "age", "region"]
 
-    df_split_cols["year"] = df_split_cols["year"].astype(int)
-    df_split_cols["value"] = pd.to_numeric(
-        df_split_cols["value"].str.extract(r"(\d+(?:\.\d+)?)")[0],
+    df_base = df_melted.drop(columns=["unit,sex,age,geo\\time"])
+    df_combined = pd.concat([df_columns_splitted, df_base], axis=1)
+
+    df_combined["year"] = df_combined["year"].astype(int)
+    df_combined["value"] = pd.to_numeric(
+        df_combined["value"].str.extract(r"(\d+(?:\.\d+)?)")[0],
         errors="coerce"
     )
-    df_valid_numb = df_split_cols.dropna(subset=["value"])
 
-    return df_valid_numb[df_valid_numb["region"] == region]
+    df_clean = df_combined.dropna(subset=["value"])
+    df_filtered = df_clean[df_clean["region"] == region]
+    df_final = df_filtered[["unit", "sex", "age", "region", "year", "value"]]
+
+    return df_final
 
 def save_data(df: pd.DataFrame, region: str = "PT") -> None:
     """Save the cleaned data as CSV for the selected region."""
