@@ -31,9 +31,8 @@ def clean_data(life_expectancy_raw_df: pd.DataFrame, region: str = "PT") -> pd.D
 
     df_clean = df_combined.dropna(subset=["value"])
     df_filtered = df_clean[df_clean["region"] == region]
-    df_final = df_filtered[["unit", "sex", "age", "region", "year", "value"]]
 
-    return df_final
+    return df_filtered
 
 def save_data(df: pd.DataFrame, region: str = "PT") -> None:
     """Save the cleaned data as CSV for the selected region."""
