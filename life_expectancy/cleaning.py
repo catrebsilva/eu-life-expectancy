@@ -34,10 +34,10 @@ def clean_data(life_expectancy_raw_df: pd.DataFrame, region: str = "PT") -> pd.D
 
     return df_filtered
 
-def save_data(df: pd.DataFrame, region: str = "PT") -> None:
+def save_data(cleaned_data: pd.DataFrame, region: str = "PT") -> None:
     """Save the cleaned data as CSV for the selected region."""
     output_path = Path(__file__).parent / "data" / f"{region.lower()}_life_expectancy.csv"
-    df.to_csv(output_path, index=False)
+    cleaned_data.to_csv(output_path, index=False)
 
 def main(region: str = "PT") -> pd.DataFrame:
     """Run the full cleaning pipeline for a given region."""
