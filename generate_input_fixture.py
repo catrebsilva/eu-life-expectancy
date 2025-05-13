@@ -2,13 +2,13 @@
 
 import pandas as pd
 
-input_path = "life_expectancy/data/eu_life_expectancy_raw.tsv"
-output_path = "life_expectancy/tests/fixtures/eu_life_expectancy_raw.tsv"
+INPUT_PATH = "life_expectancy/data/eu_life_expectancy_raw.tsv"
+OUTPUT_PATH = "life_expectancy/tests/fixtures/eu_life_expectancy_raw.tsv"
+COLUMN_NAME = "unit,sex,age,geo\\time"
 
-# Load the input fixture and create a sample with several countries
-df = pd.read_csv(input_path, sep="\t")
-col = "unit,sex,age,geo\\time"
-sample_df = df[df[col].str.contains("PT|FR|DE|IT|ES", regex=True)].copy()
-sample_df.to_csv(output_path, sep="\t", index=False)
+# Load the input data and create a filtered sample with multiple countries
+df = pd.read_csv(INPUT_PATH, sep="\t")
+sample_df = df[df[COLUMN_NAME].str.contains("PT|FR|DE|IT|ES", regex=True)].copy()
+sample_df.to_csv(OUTPUT_PATH, sep="\t", index=False)
 
-print(f"Input fixture criado: {output_path}")
+print(f"Input fixture created: {OUTPUT_PATH}")
