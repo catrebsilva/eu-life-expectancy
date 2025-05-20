@@ -1,14 +1,16 @@
 """Cleaning module for life expectancy data"""
 
+import sys
 from pathlib import Path
 import pandas as pd
 from life_expectancy.region_enum import Region
 
 
-def load_data(file_path: Path = Path(__file__).parent / "data" / "eu_life_expectancy_raw.tsv") -> pd.DataFrame:
+def load_data(
+    file_path: Path = Path(__file__).parent / "data" / "eu_life_expectancy_raw.tsv"
+) -> pd.DataFrame:
     """Load raw life expectancy data from TSV file."""
     return pd.read_csv(file_path, sep="\t")
-
 
 def clean_data(life_expectancy_raw_df: pd.DataFrame, region: Region = Region.PT) -> pd.DataFrame:
     """Clean and reshape raw data, filtering by region."""
@@ -35,12 +37,10 @@ def clean_data(life_expectancy_raw_df: pd.DataFrame, region: Region = Region.PT)
 
     return df_filtered
 
-
 def save_data(df: pd.DataFrame, region: Region = Region.PT) -> None:
     """Save the cleaned data as CSV for the selected region."""
     output_path = Path(__file__).parent / "data" / f"{region.value.lower()}_life_expectancy.csv"
     df.to_csv(output_path, index=False)
-
 
 def main(region: Region = Region.PT) -> pd.DataFrame:
     """Run the full cleaning pipeline for a given region."""
@@ -49,18 +49,20 @@ def main(region: Region = Region.PT) -> pd.DataFrame:
     save_data(cleaned_df, region)
     return cleaned_df
 
-
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Clean life expectancy data for a given country.")
-    parser.add_argument("--region", type=str, default="PT", help="Country code to filter data (e.g. PT, BE, DE)")
+    parser.add_argument(
+    "--region", type=str, default="PT",
+    help="Country code to filter data (e.g. PT, BE, DE)"
+)
     args = parser.parse_args()
 
     try:
         selected_region = Region[args.region]  # converte string para Region enum
     except KeyError:
         print(f"Invalid region code: {args.region}. Must be one of: {[r.name for r in Region]}")
-        exit(1)
+        sys.exit(1)
 
     main(selected_region)
