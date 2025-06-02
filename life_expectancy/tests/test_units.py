@@ -2,12 +2,14 @@
 
 from unittest.mock import patch
 import pandas as pd
-
 from life_expectancy.cleaning import load_data, clean_data, save_data
 
-def test_load_data_returns_dataframe():
+def test_load_data_returns_dataframe(tmp_path):
     """Check that load_data returns a non-empty DataFrame."""
-    loaded_data = load_data()
+    test_file = tmp_path / "mock.tsv"
+    test_file.write_text("unit,sex,age,geo\\time\t2019\nYR,LIFE,0,PT\t82.5")
+
+    loaded_data = load_data(test_file)
     assert isinstance(loaded_data, pd.DataFrame)
     assert not loaded_data.empty
 
