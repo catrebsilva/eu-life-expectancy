@@ -14,4 +14,4 @@ def test_clean_data_with_fixture(
         result_df.reset_index(drop=True),
         eu_life_expectancy_expected.reset_index(drop=True)
     )
-
+    

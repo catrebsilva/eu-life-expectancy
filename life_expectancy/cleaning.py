@@ -52,3 +52,4 @@ if __name__ == "__main__":
     parser.add_argument("--region", type=str, default="PT", help="Country code to filter data")
     args = parser.parse_args()
     main(args.region)
+    
