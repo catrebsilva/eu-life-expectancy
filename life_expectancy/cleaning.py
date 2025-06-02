@@ -35,7 +35,7 @@ def clean_data(life_expectancy_raw_df: pd.DataFrame, region: str = "PT") -> pd.D
     return df_filtered
 
 def save_data(df: pd.DataFrame, region: str = "PT") -> None:
-    """Save the cleaned data as CSV for the selected region."""
+    """Save the DataFrame as CSV for the selected region."""
     output_path = Path(__file__).parent / "data" / f"{region.lower()}_life_expectancy.csv"
     df.to_csv(output_path, index=False)
 
@@ -52,3 +52,4 @@ if __name__ == "__main__":
     parser.add_argument("--region", type=str, default="PT", help="Country code to filter data")
     args = parser.parse_args()
     main(args.region)
+    
