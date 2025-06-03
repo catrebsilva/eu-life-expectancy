@@ -3,7 +3,7 @@
 from unittest.mock import patch
 import pandas as pd
 from life_expectancy.cleaning import load_data, clean_data, save_data
-from life_expectancy.region_enum import Region  # necessário para usar o enum
+from life_expectancy.region_enum import Region
 
 def test_load_data_returns_dataframe(tmp_path):
     """Check that load_data returns a non-empty DataFrame."""

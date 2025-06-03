@@ -1,63 +1,67 @@
 """Enumeration of all region codes used in the life expectancy dataset."""
 
-from enum import Enum
+from enum import Enum, auto
 
 class Region(Enum):
-    """Enum representing all valid region codes (e.g., countries and blocks)."""
+    """Valid region codes (e.g., countries and aggregates)."""
 
-    AL = "AL"
-    AM = "AM"
-    AT = "AT"
-    AZ = "AZ"
-    BE = "BE"
-    BG = "BG"
-    BY = "BY"
-    CH = "CH"
-    CY = "CY"
-    CZ = "CZ"
-    DE = "DE"
-    DE_TOT = "DE_TOT"
-    DK = "DK"
-    EA18 = "EA18"
-    EA19 = "EA19"
-    EE = "EE"
-    EEA30_2007 = "EEA30_2007"
-    EEA31 = "EEA31"
-    EFTA = "EFTA"
-    EL = "EL"
-    ES = "ES"
-    EU27_2007 = "EU27_2007"
-    EU27_2020 = "EU27_2020"
-    EU28 = "EU28"
-    FI = "FI"
-    FR = "FR"
-    FX = "FX"
-    GE = "GE"
-    HR = "HR"
-    HU = "HU"
-    IE = "IE"
-    IS = "IS"
-    IT = "IT"
-    LI = "LI"
-    LT = "LT"
-    LU = "LU"
-    LV = "LV"
-    MD = "MD"
-    ME = "ME"
-    MK = "MK"
-    MT = "MT"
-    NL = "NL"
-    NO = "NO"
-    PL = "PL"
-    PT = "PT"
-    RO = "RO"
-    RS = "RS"
-    RU = "RU"
-    SE = "SE"
-    SI = "SI"
-    SK = "SK"
-    SM = "SM"
-    TR = "TR"
-    UA = "UA"
-    UK = "UK"
-    XK = "XK"
+    @staticmethod
+    def _generate_next_value_(name, start, count, last_values):
+        return name
+
+    AL = auto()
+    AM = auto()
+    AT = auto()
+    AZ = auto()
+    BE = auto()
+    BG = auto()
+    BY = auto()
+    CH = auto()
+    CY = auto()
+    CZ = auto()
+    DE = auto()
+    DE_TOT = auto()
+    DK = auto()
+    EA18 = auto()
+    EA19 = auto()
+    EE = auto()
+    EEA30_2007 = auto()
+    EEA31 = auto()
+    EFTA = auto()
+    EL = auto()
+    ES = auto()
+    EU27_2007 = auto()
+    EU27_2020 = auto()
+    EU28 = auto()
+    FI = auto()
+    FR = auto()
+    FX = auto()
+    GE = auto()
+    HR = auto()
+    HU = auto()
+    IE = auto()
+    IS = auto()
+    IT = auto()
+    LI = auto()
+    LT = auto()
+    LU = auto()
+    LV = auto()
+    MD = auto()
+    ME = auto()
+    MK = auto()
+    MT = auto()
+    NL = auto()
+    NO = auto()
+    PL = auto()
+    PT = auto()
+    RO = auto()
+    RS = auto()
+    RU = auto()
+    SE = auto()
+    SI = auto()
+    SK = auto()
+    SM = auto()
+    TR = auto()
+    UA = auto()
+    UK = auto()
+    XK = auto()
