@@ -4,15 +4,35 @@ from unittest.mock import patch
 import pandas as pd
 from life_expectancy.cleaning import load_data, clean_data, save_data
 from life_expectancy.region_enum import Region
+from life_expectancy.data_loader.tsv_loader import TSVLoader
+from life_expectancy.data_loader.json_loader import JSONLoader
+
 
 def test_load_data_returns_dataframe(tmp_path):
-    """Check that load_data returns a non-empty DataFrame."""
+    """Check that load_data returns a non-empty DataFrame using TSVLoader."""
     test_file = tmp_path / "mock.tsv"
     test_file.write_text("unit,sex,age,geo\\time\t2019\nYR,LIFE,0,PT\t82.5")
 
-    loaded_data = load_data(test_file)
+    loaded_data = load_data(test_file, loader=TSVLoader())
+
     assert isinstance(loaded_data, pd.DataFrame)
     assert not loaded_data.empty
+
+
+def test_load_data_with_json_loader(tmp_path):
+    """Check that load_data returns a DataFrame from a JSON file using JSONLoader."""
+    json_file = tmp_path / "sample.json"
+    json_file.write_text(
+        '[{"unit": "YR", "sex": "T", "age": "Y65", "region": "PT", "year": 2020, "value": 82.5}]'
+    )
+
+    loaded_data = load_data(json_file, loader=JSONLoader())
+
+    assert isinstance(loaded_data, pd.DataFrame)
+    assert not loaded_data.empty
+    assert "region" in loaded_data.columns
+    assert loaded_data.loc[0, "region"] == "PT"
+
 
 def test_clean_data_filters_and_transforms():
     """Check that clean_data filters for PT and transforms the data correctly."""
@@ -27,6 +47,7 @@ def test_clean_data_filters_and_transforms():
     assert not result.empty
     assert all(result["region"] == "PT")
     assert set(result.columns) == {"unit", "sex", "age", "region", "year", "value"}
+
 
 def test_save_data_calls_to_csv_with_correct_filename():
     """Check that save_data calls to_csv with the correct file name (mocked)."""
