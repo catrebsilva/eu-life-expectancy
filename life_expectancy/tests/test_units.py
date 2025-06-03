@@ -3,6 +3,7 @@
 from unittest.mock import patch
 import pandas as pd
 from life_expectancy.cleaning import load_data, clean_data, save_data
+from life_expectancy.region_enum import Region
 
 def test_load_data_returns_dataframe(tmp_path):
     """Check that load_data returns a non-empty DataFrame."""
@@ -21,7 +22,7 @@ def test_clean_data_filters_and_transforms():
         "2020": ["82.0", "79.9", ": "]
     })
 
-    result = clean_data(sample_data, region="PT")
+    result = clean_data(sample_data, region=Region.PT)
 
     assert not result.empty
     assert all(result["region"] == "PT")
@@ -32,7 +33,7 @@ def test_save_data_calls_to_csv_with_correct_filename():
     sample_data = pd.DataFrame({"col1": [1], "col2": [2]})
 
     with patch("pandas.DataFrame.to_csv") as mock_to_csv:
-        save_data(sample_data, region="PT")
+        save_data(sample_data, region=Region.PT)
 
         assert mock_to_csv.call_count == 1
         args, _ = mock_to_csv.call_args
